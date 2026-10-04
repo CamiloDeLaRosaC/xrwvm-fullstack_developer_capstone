@@ -66,9 +66,8 @@ def login_user(request):
 
 def logout_user(request):
     """End the current authenticated session."""
-    username = request.user.username if request.user.is_authenticated else "anonymous"
     logout(request)
-    return JsonResponse({"userName": username, "status": "Logged out"})
+    return JsonResponse({"userName": ""})
 
 
 @csrf_exempt
@@ -106,6 +105,8 @@ def get_dealerships(request, state=None):
             if dealer["state"].lower() == requested_state
             or dealer["st"].lower() == requested_state
         ]
+    for dealer in dealers:
+        dealer["_id"] = str(dealer["id"])
     return JsonResponse({"status": 200, "dealers": dealers})
 
 
@@ -113,6 +114,8 @@ def get_dealer_details(request, dealer_id):
     """Return one dealership by numeric identifier."""
     dealers = _read_json("dealerships.json", "dealerships")
     dealer = [item for item in dealers if item["id"] == dealer_id]
+    for item in dealer:
+        item["_id"] = str(item["id"])
     return JsonResponse({"status": 200 if dealer else 404, "dealer": dealer})
 
 

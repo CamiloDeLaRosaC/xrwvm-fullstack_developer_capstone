@@ -1,4 +1,7 @@
-# Best Cars Dealership — Full-Stack Capstone
+# fullstack_developer_capstone — Cars Dealership
+
+- **Repository name:** `xrwvm-fullstack_developer_capstone`
+- **Project name:** `fullstack_developer_capstone`
 
 Best Cars is a responsive full-stack dealership review application created for
 the IBM Full-Stack Development Capstone. Visitors can browse dealership
@@ -38,6 +41,10 @@ Open <http://127.0.0.1:8000/dealers>. The seeded demonstration account is
 - `GET /djangoapp/reviews/dealer/8`
 - `GET /djangoapp/get_cars`
 - `POST /djangoapp/add_review`
+- `GET /fetchDealers`
+- `GET /fetchDealers/Kansas`
+- `GET /fetchDealer/8`
+- `GET /fetchReviews/dealer/15`
 
 ## Quality and deployment
 
