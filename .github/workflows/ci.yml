@@ -37,7 +37,7 @@ jobs:
           cache-dependency-path: server/frontend/package-lock.json
       - name: Install JavaScript dependencies
         working-directory: server/frontend
-        run: npm ci
+        run: npm install --legacy-peer-deps
       - name: Lint JavaScript files with ESLint
         working-directory: server/frontend
         run: npx eslint src --ext .js,.jsx
