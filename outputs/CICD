@@ -1,1 +1,22 @@
-{"conclusion":"success","jobs":[{"completedAt":"2026-10-04T03:09:05Z","conclusion":"success","databaseId":111350270358,"name":"django-tests","startedAt":"2026-10-04T03:08:48Z","status":"completed","steps":[{"completedAt":"2026-10-04T03:08:50Z","conclusion":"success","name":"Set up job","number":1,"startedAt":"2026-10-04T03:08:49Z","status":"completed"},{"completedAt":"2026-10-04T03:08:51Z","conclusion":"success","name":"Check out repository","number":2,"startedAt":"2026-10-04T03:08:50Z","status":"completed"},{"completedAt":"2026-10-04T03:08:51Z","conclusion":"success","name":"Set up Python","number":3,"startedAt":"2026-10-04T03:08:51Z","status":"completed"},{"completedAt":"2026-10-04T03:08:59Z","conclusion":"success","name":"Install dependencies","number":4,"startedAt":"2026-10-04T03:08:51Z","status":"completed"},{"completedAt":"2026-10-04T03:09:00Z","conclusion":"success","name":"Validate Django configuration","number":5,"startedAt":"2026-10-04T03:08:59Z","status":"completed"},{"completedAt":"2026-10-04T03:09:00Z","conclusion":"success","name":"Apply migrations","number":6,"startedAt":"2026-10-04T03:09:00Z","status":"completed"},{"completedAt":"2026-10-04T03:09:03Z","conclusion":"success","name":"Run tests","number":7,"startedAt":"2026-10-04T03:09:00Z","status":"completed"},{"completedAt":"2026-10-04T03:09:03Z","conclusion":"success","name":"Post Set up Python","number":13,"startedAt":"2026-10-04T03:09:03Z","status":"completed"},{"completedAt":"2026-10-04T03:09:03Z","conclusion":"success","name":"Post Check out repository","number":14,"startedAt":"2026-10-04T03:09:03Z","status":"completed"},{"completedAt":"2026-10-04T03:09:03Z","conclusion":"success","name":"Complete job","number":15,"startedAt":"2026-10-04T03:09:03Z","status":"completed"}],"url":"https://github.com/CamiloDeLaRosaC/cars-dealership-capstone/actions/runs/37173208998/job/111350270358"}],"name":"Cars Dealership CI","status":"completed","url":"https://github.com/CamiloDeLaRosaC/cars-dealership-capstone/actions/runs/37173208998"}
+Run: Cars Dealership CI
+URL: https://github.com/CamiloDeLaRosaC/xrwvm-fullstack_developer_capstone/actions/runs/37174266380
+Status: completed
+Conclusion: success
+
+✓ Lint Python Files in 17s (Job ID 111353495912)
+  ✓ Check out repository
+  ✓ Set up Python
+  ✓ Install Python dependencies and pylint
+  ✓ Lint Python files with pylint
+
+✓ Lint JavaScript Files in 24s (Job ID 111353496042)
+  ✓ Check out repository
+  ✓ Set up Node.js
+  ✓ Install JavaScript dependencies
+  ✓ Lint JavaScript files with ESLint
+
+✓ Django Tests in 13s (Job ID 111353561895)
+  ✓ Install dependencies
+  ✓ Validate Django configuration
+  ✓ Apply migrations
+  ✓ Run tests
