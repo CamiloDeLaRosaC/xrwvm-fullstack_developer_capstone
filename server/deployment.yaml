@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: best-cars-dealership
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: best-cars
+  template:
+    metadata:
+      labels:
+        app: best-cars
+    spec:
+      containers:
+        - name: django
+          image: best-cars-dealership:latest
+          ports:
+            - containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: best-cars-service
+spec:
+  selector:
+    app: best-cars
+  ports:
+    - port: 80
+      targetPort: 8000

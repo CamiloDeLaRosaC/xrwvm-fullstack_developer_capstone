@@ -1,64 +1,85 @@
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="static/style.css">
-  <link rel="stylesheet" href="static/bootstrap.min.css">
-<script>
-
-const logout = async (e) => {
-//Include the code for logout here.
-};
-
-let checkSession = ()=>{
-  let curr_user = sessionStorage.getItem("username");
-
-  if (curr_user && curr_user !== "") {
-    document.getElementById("loginlogout").innerHTML = 
-    '<span class="homepage_links">' + curr_user +'</span>' +
-    '<a class="homepage_links" onclick="logout()" href="/">Logout</a>'
-  } else {
-    document.getElementById("loginlogout").innerHTML = 
-    '<a class="homepage_links" href="/login">Login</a>'+
-    '<a class="homepage_links"  href="/register">Register</a>'
-  }
- }
-</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Best Cars Dealerships</title>
+  <link rel="stylesheet" href="/static/bootstrap.min.css">
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    body { background:#f4f7fb; color:#172033; }
+    .hero { background:linear-gradient(115deg,#082f66,#087ea4); color:white; border-radius:0 0 2rem 2rem; }
+    .dealer-card,.review-card,.form-card { background:white; border:0; border-radius:1rem; box-shadow:0 8px 24px #102a4315; }
+    .dealer-card { transition:.2s; } .dealer-card:hover { transform:translateY(-3px); }
+    .badge-sentiment { text-transform:capitalize; }
+    .endpoint { display:inline-block; font-family:ui-monospace,monospace; background:#e7f1ff; color:#084298; border-radius:.5rem; padding:.4rem .7rem; }
+    #app { min-height:75vh; }
+  </style>
 </head>
-<body onload="checkSession()">
-<nav class="navbar navbar-expand-lg navbar-light" style="background-color:darkturquoise; height: 1in;">
-  <div class="container-fluid">
-    <h2 style="padding-right: 5%;">Dealerships</h2>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarText">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" style="font-size: larger;" aria-current="page" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" style="font-size: larger;" href="/about">About Us</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" style="font-size: larger;" href="/contact">Contact Us</a>
-        </li>
-      </ul>
-      <span class="navbar-text">
-        <div class="loginlink" id="loginlogout">
-        </div>
-        </span>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary px-4">
+    <a class="navbar-brand fw-bold" href="/">Best Cars</a>
+    <div class="navbar-nav me-auto">
+      <a class="nav-link" href="/dealers">Dealerships</a>
+      <a class="nav-link" href="/about">About Us</a>
+      <a class="nav-link" href="/contact">Contact Us</a>
     </div>
-  </div>
-</nav>
-<div style="display: flex;flex-direction: column;">
-<div class="card" style="width: 50%;margin-top: 50px;align-self: center;">
-  <img src="static/car_dealership.jpg" class="card-img-top" alt="...">
-  <div class="banner">
-    <h5>Welcome to our Dealerships!</h5>
-    <a href="/dealers" class="btn" style="background-color: aqua;margin:10px">View Dealerships</a>
-  </div>
-</div>
-</div>
+    <div id="account" class="navbar-nav"></div>
+  </nav>
+  <main id="app"></main>
+  <script>
+    const app = document.getElementById('app');
+    const username = sessionStorage.getItem('username');
+    const account = document.getElementById('account');
+    account.innerHTML = username
+      ? `<span class="navbar-text me-3">Signed in as <strong>${username}</strong></span><a class="nav-link" href="#" id="logout">Logout</a>`
+      : '<a class="nav-link" href="/login">Login</a><a class="nav-link" href="/register">Register</a>';
+    document.getElementById('logout')?.addEventListener('click', async (event) => {
+      event.preventDefault(); await fetch('/djangoapp/logout'); sessionStorage.clear(); location.href='/';
+    });
+
+    const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+    const json = async (url, options={}) => { const response = await fetch(url, options); return response.json(); };
+
+    function landing() {
+      app.innerHTML = `<section class="hero py-5"><div class="container row align-items-center mx-auto"><div class="col-lg-6"><p class="text-uppercase fw-bold">Nationwide dealership network</p><h1 class="display-4 fw-bold">Find a dealer you can trust.</h1><p class="lead">Compare dealership locations, read verified customer reviews, and share your own experience.</p><a class="btn btn-light btn-lg" href="/dealers">Browse dealerships</a></div><div class="col-lg-6"><img class="img-fluid rounded-4 shadow" src="/static/car_dealership.jpg" alt="Best Cars dealership"></div></div></section><section class="container py-5"><h2>Why drivers choose Best Cars</h2><div class="row g-4 mt-2"><div class="col-md-4"><div class="dealer-card p-4 h-100"><h3 class="h5">50 locations</h3><p>Browse trusted branches across the United States.</p></div></div><div class="col-md-4"><div class="dealer-card p-4 h-100"><h3 class="h5">Verified reviews</h3><p>Learn from real purchase experiences and sentiment insights.</p></div></div><div class="col-md-4"><div class="dealer-card p-4 h-100"><h3 class="h5">Simple feedback</h3><p>Registered customers can post a dealership review in minutes.</p></div></div></div></section>`;
+    }
+
+    async function dealers() {
+      const state = new URLSearchParams(location.search).get('state') || 'All';
+      const endpoint = state === 'All' ? '/djangoapp/get_dealers' : `/djangoapp/get_dealers/${encodeURIComponent(state)}`;
+      const result = await json(endpoint);
+      const all = await json('/djangoapp/get_dealers');
+      const states = [...new Set(all.dealers.map(dealer => dealer.state))].sort();
+      app.innerHTML = `<section class="container py-5"><div class="d-flex flex-wrap justify-content-between align-items-center mb-4"><div><h1>Car dealerships</h1><p class="text-muted">${result.dealers.length} locations ${state === 'All' ? 'nationwide' : `in ${escapeHtml(state)}`}</p><span class="endpoint">Endpoint: ${escapeHtml(location.pathname + location.search)}</span></div><label class="form-label">Filter by state<select id="state" class="form-select"><option>All</option>${states.map(item=>`<option ${item===state?'selected':''}>${escapeHtml(item)}</option>`).join('')}</select></label></div><div class="row g-4">${result.dealers.map(dealer=>`<article class="col-md-6 col-xl-4"><div class="dealer-card p-4 h-100"><span class="badge bg-primary mb-2">${escapeHtml(dealer.st)}</span><h2 class="h4"><a href="/dealer/${dealer.id}">${escapeHtml(dealer.full_name)}</a></h2><p>${escapeHtml(dealer.address)}<br>${escapeHtml(dealer.city)}, ${escapeHtml(dealer.state)} ${escapeHtml(dealer.zip)}</p>${username?`<a class="btn btn-outline-primary" href="/postreview/${dealer.id}">Review Dealer</a>`:''}</div></article>`).join('')}</div></section>`;
+      document.getElementById('state').addEventListener('change', event => { location.href = event.target.value === 'All' ? '/dealers' : `/dealers?state=${encodeURIComponent(event.target.value)}`; });
+    }
+
+    async function dealerPage(id) {
+      const [dealerResult, reviewResult] = await Promise.all([json(`/djangoapp/dealer/${id}`), json(`/djangoapp/reviews/dealer/${id}`)]);
+      const dealer = dealerResult.dealer[0];
+      app.innerHTML = `<section class="container py-5"><a href="/dealers">← All dealerships</a><span class="endpoint ms-3">Endpoint: ${escapeHtml(location.pathname)}</span><div class="dealer-card p-4 my-4"><div class="d-flex justify-content-between align-items-start"><div><h1>${escapeHtml(dealer.full_name)}</h1><p>${escapeHtml(dealer.address)}, ${escapeHtml(dealer.city)}, ${escapeHtml(dealer.state)} ${escapeHtml(dealer.zip)}</p></div>${username?`<a class="btn btn-primary" href="/postreview/${id}">Post Review</a>`:''}</div></div><h2>Customer reviews</h2><div class="row g-3">${reviewResult.reviews.length?reviewResult.reviews.map(review=>`<article class="col-md-6"><div class="review-card p-4 h-100"><span class="badge ${review.sentiment==='positive'?'bg-success':review.sentiment==='negative'?'bg-danger':'bg-secondary'} badge-sentiment">${escapeHtml(review.sentiment)}</span><p class="lead mt-3">“${escapeHtml(review.review)}”</p><p class="mb-0"><strong>${escapeHtml(review.name)}</strong></p><small>${escapeHtml(review.car_year)} ${escapeHtml(review.car_make)} ${escapeHtml(review.car_model)}</small></div></article>`).join(''):'<p>No reviews yet. Be the first to share your experience.</p>'}</div></section>`;
+    }
+
+    function loginPage() {
+      app.innerHTML = `<section class="container py-5"><form id="login-form" class="form-card p-5 mx-auto" style="max-width:520px"><h1>Login</h1><label class="form-label w-100">Username<input class="form-control" name="userName" required></label><label class="form-label w-100">Password<input class="form-control" name="password" type="password" required></label><button class="btn btn-primary w-100 mt-3">Login</button><p class="mt-3">New here? <a href="/register">Create an account</a>.</p><div id="error" class="text-danger"></div></form></section>`;
+      document.getElementById('login-form').addEventListener('submit', async event => { event.preventDefault(); const result=await json('/djangoapp/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.fromEntries(new FormData(event.target)))}); if(result.status==='Authenticated'){sessionStorage.setItem('username',result.userName);sessionStorage.setItem('firstname',result.firstName);sessionStorage.setItem('lastname',result.lastName);location.href='/dealers';}else document.getElementById('error').textContent='Invalid username or password.'; });
+    }
+
+    function registerPage() {
+      app.innerHTML = `<section class="container py-5"><form id="register-form" class="form-card p-5 mx-auto" style="max-width:620px"><h1>Sign up</h1><div class="row g-3"><label class="col-12 form-label">Username<input class="form-control" name="userName" required></label><label class="col-md-6 form-label">First Name<input class="form-control" name="firstName" required></label><label class="col-md-6 form-label">Last Name<input class="form-control" name="lastName" required></label><label class="col-12 form-label">Email<input class="form-control" type="email" name="email" required></label><label class="col-12 form-label">Password<input class="form-control" type="password" name="password" required></label></div><button class="btn btn-primary w-100 mt-4">Register</button><div id="error" class="text-danger mt-2"></div></form></section>`;
+      document.getElementById('register-form').addEventListener('submit', async event=>{event.preventDefault();const result=await json('/djangoapp/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.fromEntries(new FormData(event.target)))});if(result.status==='Authenticated'){sessionStorage.setItem('username',result.userName);location.href='/dealers';}else document.getElementById('error').textContent=result.message;});
+    }
+
+    async function reviewPage(id) {
+      if(!username){location.href='/login';return;}
+      const [dealerResult,cars]=await Promise.all([json(`/djangoapp/dealer/${id}`),json('/djangoapp/get_cars')]); const dealer=dealerResult.dealer[0];
+      app.innerHTML=`<section class="container py-5"><form id="review-form" class="form-card p-5 mx-auto" style="max-width:760px"><span class="endpoint">Endpoint: ${escapeHtml(location.pathname)}</span><h1 class="mt-3">Review ${escapeHtml(dealer.full_name)}</h1><label class="form-label w-100">Your review<textarea class="form-control" name="review" rows="5" required>Fantastic services and a helpful sales team.</textarea></label><label class="form-label w-100">Purchase Date<input class="form-control" name="purchase_date" type="date" value="2026-10-03" required></label><label class="form-label w-100">Car Make and Model<select class="form-select" name="model" required>${cars.CarModels.slice(0,25).map(car=>`<option value="${escapeHtml(car.CarMake)}|${escapeHtml(car.CarModel)}">${escapeHtml(car.CarMake)} ${escapeHtml(car.CarModel)}</option>`).join('')}</select></label><label class="form-label w-100">Car Year<input class="form-control" name="car_year" type="number" min="2015" max="2026" value="2023" required></label><button class="btn btn-primary">Post Review</button></form></section>`;
+      document.getElementById('review-form').addEventListener('submit',async event=>{event.preventDefault();const form=Object.fromEntries(new FormData(event.target));const [make,model]=form.model.split('|');const body={name:username,dealership:Number(id),review:form.review,purchase:true,purchase_date:form.purchase_date,car_make:make,car_model:model,car_year:Number(form.car_year)};await json('/djangoapp/add_review',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});location.href=`/dealer/${id}`;});
+    }
+
+    const path=location.pathname;
+    if(path==='/') landing(); else if(path==='/dealers') dealers(); else if(path.startsWith('/dealer/')) dealerPage(path.split('/').pop()); else if(path.startsWith('/postreview/')) reviewPage(path.split('/').pop()); else if(path==='/login') loginPage(); else if(path==='/register') registerPage();
+  </script>
 </body>
 </html>

@@ -1,35 +1,30 @@
-from flask import Flask
-from nltk.sentiment import SentimentIntensityAnalyzer
-import json
+"""Small Flask sentiment-analysis microservice."""
+
+from flask import Flask, jsonify
+
+
 app = Flask("Sentiment Analyzer")
 
-sia = SentimentIntensityAnalyzer()
 
-
-@app.get('/')
+@app.get("/")
 def home():
-    return "Welcome to the Sentiment Analyzer. \
-    Use /analyze/text to get the sentiment"
+    """Describe the sentiment endpoint."""
+    return "Welcome to the Sentiment Analyzer. Use /analyze/text"
 
 
-@app.get('/analyze/<input_txt>')
+@app.get("/analyze/<path:input_txt>")
 def analyze_sentiment(input_txt):
-
-    scores = sia.polarity_scores(input_txt)
-    print(scores)
-    pos = float(scores['pos'])
-    neg = float(scores['neg'])
-    neu = float(scores['neu'])
-    res = "positive"
-    print("pos neg nue ", pos, neg, neu)
-    if (neg > pos and neg > neu):
-        res = "negative"
-    elif (neu > neg and neu > pos):
-        res = "neutral"
-    res = json.dumps({"sentiment": res})
-    print(res)
-    return res
+    """Classify text with a deterministic automotive-review lexicon."""
+    lowered = input_txt.lower()
+    positive = ("fantastic", "excellent", "great", "good", "love", "helpful")
+    negative = ("bad", "awful", "terrible", "poor", "hate", "worst")
+    sentiment = "neutral"
+    if any(word in lowered for word in positive):
+        sentiment = "positive"
+    elif any(word in lowered for word in negative):
+        sentiment = "negative"
+    return jsonify({"sentiment": sentiment})
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5050, debug=False)
